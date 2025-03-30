@@ -2,16 +2,24 @@ package com.legoinventorytool.api.sets;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
 class LEGOSet {
-    private @Id @GeneratedValue Long id;
+    @Id
+    @SequenceGenerator(
+            name = "legoSet_sequence",
+            sequenceName = "legoSet_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue (
+            strategy = GenerationType.SEQUENCE,
+            generator = "legoSet_sequence"
+    )
+    private Long id;
     private Long upc;
     private String name;
     private Long modelNumber;

@@ -1,9 +1,7 @@
 package com.legoinventorytool.api.sets;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,8 +16,18 @@ public class LEGOSetController {
         this.setService = setService;
     }
 
+    @PostMapping
+    public void addNewSet(@RequestBody LEGOSet newSet) {
+        setService.addNewSet(newSet);
+    }
+
     @GetMapping
-    public List<LEGOSet> getSets() {
+    public List<LEGOSet> getAllSets() {
         return setService.getSets();
+    }
+
+    @DeleteMapping(path = "{upc}")
+    public void deleteSet(@PathVariable("upc") Long upc) {
+        setService.deleteSet(upc);
     }
 }
