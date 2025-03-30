@@ -27,6 +27,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.hibernate.orm:hibernate-core")
+	implementation("mysql:mysql-connector-java:8.0.33")
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
