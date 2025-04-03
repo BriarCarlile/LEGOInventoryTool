@@ -1,7 +1,9 @@
 package com.legoinventorytool.api.sets;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -17,8 +19,13 @@ public class LEGOSetController {
     }
 
     @PostMapping
-    public void addNewSet(@RequestBody LEGOSet newSet) {
-        setService.addNewSet(newSet);
+    public ResponseEntity<?> addNewSet(@RequestBody LEGOSet newSet) {
+        try {
+            String response = setService.addNewSet(newSet);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
@@ -26,8 +33,18 @@ public class LEGOSetController {
         return setService.getSets();
     }
 
+    @GetMapping
+    public List<LEGOSet> getSetsByUpc(@RequestParam long upc) {
+        return setService.getSetsByUpc(upc);
+    }
+
     @DeleteMapping(path = "{upc}")
-    public void deleteSet(@PathVariable("upc") Long upc) {
-        setService.deleteSet(upc);
+    public ResponseEntity<?> deleteSet(@PathVariable("upc") Long upc) {
+        try {
+            setService.deleteSet(upc);
+            return ResponseEntity.ok("Set deleted");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
