@@ -1,30 +1,33 @@
 package com.legoinventorytool.api.sets;
 
-import com.legoinventorytool.api.exceptions.SetNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class LEGOSetService {
 
     private final LEGOSetRepository legoSetRepository;
+    private final LEGOSetDTOMapper legoSetDTOMapper;
 
     @Autowired
-    public LEGOSetService(LEGOSetRepository legoSetRepository) {
+    public LEGOSetService(LEGOSetRepository legoSetRepository, LEGOSetDTOMapper legoSetDTOMapper) {
         this.legoSetRepository = legoSetRepository;
+        this.legoSetDTOMapper = legoSetDTOMapper;
     }
 
-    public List<LEGOSet> getSets() {
-        return legoSetRepository.findAll();
+    public List<LEGOSetDTO> getSets() {
+        return legoSetRepository.findAll()
+                .stream()
+                .map(legoSetDTOMapper).collect(Collectors.toList());
     }
 
-    public String addNewSet(@RequestParam LEGOSet legoSet) {
+    public String addNewSet(LEGOSet legoSet) {
         if (legoSetRepository.existsByUpc(legoSet.getUpc())) {
             legoSetRepository.save(legoSet);
             log.info("{}: [{}]Already exists in inventory, successfully added again " +
@@ -37,10 +40,12 @@ public class LEGOSetService {
         return MessageFormat.format("{0}: Successfully added", legoSet.getUpc());
     }
 
-    public List<LEGOSet> getSetsByUpc(@RequestParam long upc) {
+    public List<LEGOSetDTO> getSetsByUpc(long upc) {
         try {
             log.info("{}: [{}] returning from inventory successfully", upc, legoSetRepository.findById(upc).get().getId());
-            return legoSetRepository.findAllByUpc(upc);
+            return legoSetRepository.findAllByUpc(upc)
+                    .stream()
+                    .map(legoSetDTOMapper).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("{}: Error returning from inventory successfully", upc, e);
             throw e;

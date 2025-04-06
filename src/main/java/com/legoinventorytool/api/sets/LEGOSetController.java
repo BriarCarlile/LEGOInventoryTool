@@ -1,7 +1,6 @@
 package com.legoinventorytool.api.sets;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -29,12 +28,12 @@ public class LEGOSetController {
     }
 
     @GetMapping
-    public List<LEGOSet> getAllSets() {
+    public List<LEGOSetDTO> getAllSets() {
         return setService.getSets();
     }
 
-    @GetMapping
-    public List<LEGOSet> getSetsByUpc(@RequestParam long upc) {
+    @GetMapping("{upc}")
+    public List<LEGOSetDTO> getSetsByUpc(@PathVariable long upc) {
         return setService.getSetsByUpc(upc);
     }
 
