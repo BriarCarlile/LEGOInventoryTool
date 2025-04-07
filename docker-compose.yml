@@ -1,12 +1,11 @@
 version: '0.9'
 
 services:
-  LEGOInventoryDevContainer:
-    build: .devcontainer
+  lego_inventory_dev_container:
+    image: jb-devcontainer-java
     container_name: LEGOInventoryDevContainer
     ports:
       - 8080:80
-      - 3306:3306
     volumes:
       - .:/workspace
   mysql:
