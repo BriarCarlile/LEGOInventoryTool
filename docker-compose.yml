@@ -1,13 +1,6 @@
 version: '0.9'
 
 services:
-  lego_inventory_dev_container:
-    image: jb-devcontainer-java
-    container_name: LEGOInventoryDevContainer
-    ports:
-      - 8080:80
-    volumes:
-      - .:/workspace
   mysql:
     image: mysql
     container_name: LEGOInventorySqlContainer
@@ -20,4 +13,3 @@ services:
       MYSQL_PASSWORD: ${DB_USERNAME_PASSWORD}
     volumes:
       - ./project_resources:/var/lib/project_resources
-
