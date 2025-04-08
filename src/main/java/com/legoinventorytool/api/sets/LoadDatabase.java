@@ -16,8 +16,8 @@ class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(LEGOSetRepository legoSetRepository) {
         return args -> {
-            log.info("Loading LegoInventoryToolApplication");
-            log.info("Preloading " + legoSetRepository.save(new LEGOSet(673419389457L, LocalDate.now())));
+//            log.info("Loading LegoInventoryToolApplication");
+//            log.info("Preloading " + legoSetRepository.save(new LEGOSet(673419389457L, LocalDate.now())));
         };
     }
 }

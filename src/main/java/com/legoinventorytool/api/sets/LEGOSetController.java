@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/set")
+@RequestMapping(path = "api/v1/")
 public class LEGOSetController {
 
     private final LEGOSetService setService;
@@ -17,7 +17,7 @@ public class LEGOSetController {
         this.setService = setService;
     }
 
-    @PostMapping
+    @PostMapping("/set")
     public ResponseEntity<?> addNewSet(@RequestBody LEGOSet newSet) {
         try {
             String response = setService.addNewSet(newSet);
@@ -27,18 +27,18 @@ public class LEGOSetController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/sets")
     public List<LEGOSetDTO> getAllSets() {
         return setService.getSets();
     }
 
-    @GetMapping("{upc}")
-    public List<LEGOSetDTO> getSetsByUpc(@PathVariable long upc) {
+    @GetMapping("/set")
+    public List<LEGOSetDTO> getSetsByUpc(@RequestParam long upc) {
         return setService.getSetsByUpc(upc);
     }
 
-    @DeleteMapping(path = "{upc}")
-    public ResponseEntity<?> deleteSet(@PathVariable("upc") Long upc) {
+    @DeleteMapping("/set")
+    public ResponseEntity<?> deleteSet(@RequestParam(value = "upc") long upc) {
         try {
             setService.deleteSet(upc);
             return ResponseEntity.ok("Set deleted");
