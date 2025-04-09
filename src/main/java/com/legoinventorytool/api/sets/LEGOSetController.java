@@ -27,6 +27,12 @@ public class LEGOSetController {
         }
     }
 
+    @PutMapping("/set")
+    public ResponseEntity<?> updateSet(@RequestBody LEGOSet set) {
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/sets")
     public List<LEGOSetDTO> getAllSets() {
         return setService.getSets();

@@ -14,6 +14,8 @@ public interface LEGOSetRepository extends JpaRepository<LEGOSet, Long>{
     Optional<LEGOSet> findLegoSetByUpc(Long upc);
 
 
+    List<LEGOSet> findByUpcAndNameIsNullOrderByIdDesc(long upc);
+
     //@Query("SELECT s FROM LEGOSet s WHERE s.upc = ?1")
     boolean existsLEGOSetsByUpc(Long upc);
 

@@ -1,5 +1,6 @@
 package com.legoinventorytool.api.sets;
 
+import com.legoinventorytool.api.exceptions.MustUpdateNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,13 +44,30 @@ public class LEGOSetService {
         return MessageFormat.format("{0}: Successfully added", legoSet.getUpc());
     }
 
+    public String updateSet(LEGOSet set) throws NoSuchElementException {
+        if (set.getName() == null || set.getName().isEmpty()) {
+            throw new MustUpdateNameException(MessageFormat.format("{0}: Name is empty or null", set.getUpc()));
+        }
+        List<LEGOSet> matches = legoSetRepository.findByUpcAndNameIsNullOrderByIdDesc(set.getUpc());
+        if (matches.size() == 0) {
+            throw new NoSuchElementException("No lego set with upc " + set.getUpc());
+        }
+        //TODO Update PUT method(s) to account for sets without anything beyond UPC and updating sets  with a upcs
+        LEGOSet updatedSet = matches.getFirst();
+        updatedSet.setName(set.getName());
+
+    }
+
     public List<LEGOSetDTO> getSetsByUpc(long upc) {
         try {
-            //TODO Fix {"timestamp":"2025-04-08T03:06:33.993+00:00","status":500,"error":"Internal Server Error","message":"Query did not return a unique result: 2 results were returned","path":"/api/v1/set"}
-            log.info("{}: [{}] returning from inventory successfully", upc, legoSetRepository.findLegoSetByUpc(upc).get().getId());
-            return legoSetRepository.findAllByUpc(upc)
+            List<LEGOSetDTO> sets = legoSetRepository.findAllByUpc(upc)
                     .stream()
                     .map(legoSetDTOMapper).collect(Collectors.toList());
+            String ids = sets.stream()
+                            .map(set -> String.valueOf(set.id()))
+                                    .collect(Collectors.joining(", "));
+            log.info("{}: [{}] returned from inventory successfully", upc, ids);
+            return sets;
         } catch (Exception e) {
             log.error("{}: Error returning from inventory", upc, e);
             throw e;
