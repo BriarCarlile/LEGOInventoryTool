@@ -1,6 +1,5 @@
 package com.legoinventorytool.api.sets;
 
-import com.legoinventorytool.api.exceptions.MustUpdateNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,32 +30,31 @@ public class LEGOSetService {
     }
 
     @Transactional
-    public String addNewSet(LEGOSet legoSet) {
+    public Map<String, Object> addNewSet(LEGOSet legoSet) {
         if (legoSetRepository.existsLEGOSetsByUpc(legoSet.getUpc())) {
-            legoSetRepository.save(legoSet);
+            LEGOSet newSet = legoSetRepository.save(legoSet);
             log.info("{}: [{}]Already exists in inventory, successfully added again " +
-                    "to LEGO inventory successfully", legoSet.getUpc(), legoSet.getId());
-            return MessageFormat.format("{0}: Already exists, added again successfully", legoSet.getUpc());
+                    "to LEGO inventory successfully", newSet.getUpc(), newSet.getId());
+            return Map.of("id", newSet.getId());
         }
-        // TODO add verification of LEGO set creation.
-        legoSetRepository.save(legoSet);
-        log.info("{}: [{}]Successfully added to LEGO inventory successfully", legoSet.getUpc(), legoSet.getId());
-        return MessageFormat.format("{0}: Successfully added", legoSet.getUpc());
+        LEGOSet newSet = legoSetRepository.save(legoSet);
+        log.info("{}: [{}]Successfully added to LEGO inventory successfully", newSet.getUpc(), newSet.getId());
+        return Map.of("id", newSet.getId());
     }
 
-    public String updateSet(LEGOSet set) throws NoSuchElementException {
-        if (set.getName() == null || set.getName().isEmpty()) {
-            throw new MustUpdateNameException(MessageFormat.format("{0}: Name is empty or null", set.getUpc()));
-        }
-        List<LEGOSet> matches = legoSetRepository.findByUpcAndNameIsNullOrderByIdDesc(set.getUpc());
-        if (matches.size() == 0) {
-            throw new NoSuchElementException("No lego set with upc " + set.getUpc());
-        }
-        //TODO Update PUT method(s) to account for sets without anything beyond UPC and updating sets  with a upcs
-        LEGOSet updatedSet = matches.getFirst();
-        updatedSet.setName(set.getName());
-
-    }
+//    public String updateSet(LEGOSet set) throws NoSuchElementException {
+//        if (set.getName() == null || set.getName().isEmpty()) {
+//            throw new MustUpdateNameException(MessageFormat.format("{0}: Name is empty or null", set.getUpc()));
+//        }
+//        List<LEGOSet> matches = legoSetRepository.findByUpcAndNameIsNullOrderByIdDesc(set.getUpc());
+//        if (matches.size() == 0) {
+//            throw new NoSuchElementException("No lego set with upc " + set.getUpc());
+//        }
+//        //TODO Update PUT method(s) to account for sets without anything beyond UPC and updating sets with a upcs
+//        LEGOSet updatedSet = matches.getFirst();
+//        updatedSet.setName(set.getName());
+//
+//    }
 
     public List<LEGOSetDTO> getSetsByUpc(long upc) {
         try {
